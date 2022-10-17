@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-#Bash script that displays a message when it is terminated
-trap 'echo "I am invincible!!!"' SIGTERM
+# Infinity loop and sending signal
+# trap receive signal
+trap "echo I am invincible!!!" SIGTERM
 while :
 do
 	echo "To infinity and beyond"

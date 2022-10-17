@@ -1,12 +1,12 @@
-#include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
-#include <sys/wait.h>
 #include <unistd.h>
+#include <stdio.h>
 
 /**
- * infinite_while - function that containts an infinite loop
- *
- * Return: 0
+ * infinite_while - Infinite while for manage zombie process
+ * Void: No entry parameters
+ * Return: exit 0 success
  */
 int infinite_while(void)
 {
@@ -18,20 +18,26 @@ int infinite_while(void)
 }
 
 /**
- * main - Entry point
- *
- * Return: Always 0
+ * main - Main function zombie process
+ * Void: No entry parameters
+ * Return: Exit 0 success
  */
 int main(void)
 {
-	int i;
+	pid_t child_pd;
+	int num_of_proc;
 
-	for (i = 0; i < 5; i++)
+	for (num_of_proc = 1; num_of_proc < 6; num_of_proc++)
 	{
-		if (fork() == 0)
+		child_pd = fork();
+		if (child_pd > 0)
 		{
-			dprintf(1, "Zombie process created, PID: %d\n", getpid());
-			return (0);
+			printf("Zombie process created, PID: %d\n", child_pd);
+			sleep(1);
+		}
+		else
+		{
+			exit(0);
 		}
 	}
 	infinite_while();
