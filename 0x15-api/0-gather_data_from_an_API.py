@@ -1,33 +1,27 @@
 #!/usr/bin/python3
-"""
-Using https://jsonplaceholder.typicode.com
-returns info about employee TODO progress
-Implemented using recursion
-"""
-import re
+"""Displays fake user data using the JSON Placeholder API."""
 import requests
-import sys
+from sys import argv
 
 
-API = "https://jsonplaceholder.typicode.com"
-"""REST API url"""
+if __name__ == "__main__":
+    employee_id = argv[1]
+    api = 'https://jsonplaceholder.typicode.com/'
 
+    endpoint = 'users/{}'.format(employee_id)
+    employee = requests.get(api + endpoint).json()
 
-if __name__ == '__main__':
-    if len(sys.argv) > 1:
-        if re.fullmatch(r'\d+', sys.argv[1]):
-            id = int(sys.argv[1])
-            user_res = requests.get('{}/users/{}'.format(API, id)).json()
-            todos_res = requests.get('{}/todos'.format(API)).json()
-            user_name = user_res.get('name')
-            todos = list(filter(lambda x: x.get('userId') == id, todos_res))
-            todos_done = list(filter(lambda x: x.get('completed'), todos))
-            print(
-                'Employee {} is done with tasks({}/{}):'.format(
-                    user_name,
-                    len(todos_done),
-                    len(todos)
-                )
-            )
-            for todo_done in todos_done:
-                print('\t {}'.format(todo_done.get('title')))
+    endpoint = 'todos?userId={}'.format(employee_id)
+    tasks = requests.get(api + endpoint).json()
+
+    employee_name = employee.get("name")
+    task_count = len(tasks)
+
+    completed_tasks = [task for task in tasks if task.get("completed")]
+
+    print("Employee {} is done with tasks({}/{}):".format(
+        employee_name, len(completed_tasks), task_count
+        )
+    )
+    for task in completed_tasks:
+        print("\t " + task.get("title"))
